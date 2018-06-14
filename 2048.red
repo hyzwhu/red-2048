@@ -146,13 +146,13 @@ move-right: function [][
 can-move: func [return: [logic!] /local checkfull f u d l r][
 	canmove: false
 	f: true
-	repeat i 3 [
-		repeat j 3 [
+	repeat i 4 [
+		repeat j 4 [
 			d: i + 1 
 			r: j + 1
 			if any [
-					all [grid-block/:i/:j = grid-block/:i/:r j < 4] 
-					all [grid-block/:i/:j = grid-block/:d/:j i < 4]
+					all [j < 4 grid-block/:i/:j = grid-block/:i/:r ] 
+					all [i < 4 grid-block/:i/:j = grid-block/:d/:j ]
 				][
 					canmove: true 
 					f: false
