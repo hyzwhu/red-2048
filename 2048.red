@@ -7,8 +7,11 @@ grid-world: layout/tight [
     at 0x120 b 	at 40x120 b at 80x120 b at 120x120 b
 ]
 
-grid-block: [[2 2 4 4] [2 0 2 0] [0 4 0 4] [8 4 8 4]]
-
+original-block: [[0 0 0 0] [0 0 2 0] [2 0 0 0] [0 0 0 0]]
+init-block: func [][
+	grid-block: copy/deep original-block
+	fake-block: copy/deep original-block
+]
 show-block: function [/local i j l][     ;--to bind the block value with the window's panes
 	repeat i 4 [
 		repeat j 4 [
@@ -37,22 +40,13 @@ add-grid: function [/local i j f][
 	]
 ]	
 
-; init-grid: function [/local i j][
-; 	i: random 16 
-; 	j: random 16 
-; 	while [j = i][
-; 		j: random 16 
-; 	]
-; 	grid-world/pane/:i/text: "2" 
-; 	grid-world/pane/:j/text: "2"
-; ]
 grid-world/actors: make object! [
 	on-key-down: func [face [object!] event [event!]][
 		switch event/key [
-			up		
-			down 
-			left 	[move-left show-block]
-			right	[move-right show-block]
+			up		[move-up 	show-block win? can-move]
+			down 	[move-down 	show-block win? can-move]
+			left 	[move-left 	show-block win? can-move]
+			right	[move-right show-block win? can-move]
 		]
 	]
 ]
@@ -94,61 +88,98 @@ move-left-one: func [rn [integer!] return: [logic!] /local col i j l y modified]
 	modified
 ]
 
-move-left: function [][
-	repeat i 4 [
-		move-left-one i
+rotation: func [angle [integer!] /local offsetX offsetY sin cos rx ry][
+	offsetX: offsetY: 5
+	if 90 = angle [offsetY: 0]
+	if 270 = angle [offsetX: 0]
+	sin: to-integer sine angle
+	cos: to-integer cosine angle 
+	fake-block: copy/deep grid-block
+	repeat x 4 [
+		repeat y 4 [
+			rx: x * cos - (y * sin) + offsetX
+			ry: y * cos + (x * sin) + offsetY
+			grid-block/:rx/:ry: fake-block/:x/:y
+		]
 	]
 ]
 
-; move-right-one: func [rn [integer!] return: [logic!] /local i j y l modified col][
-; 	col: -1 
-; 	modified: false
-; 	i: 4 
-; 	j: 16 
-; 	while [i > 0][
-; 		if 0 = grid-block/:rn/:i [i: i - 1 continue]
-; 		if -1 = col [
-; 			col: i 
-; 			i: i - 1 
-; 			continue
-; 		]
-; 		if grid-block/:rn/:i <> grid-block/:rn/:col [
-; 			col: i 
-; 			i: i - 1 
-; 			continue
-; 		]
-; 		if grid-block/:rn/:i = grid-block/:rn/:col [
-; 			grid-block/:rn/:col: 2 * grid-block/:rn/:col
-; 			grid-block/:rn/:i: 0
-; 			col: -1 
-; 			modified: true
-; 		]
-; 		i: i - 1
-; 	]
-; 	while [j > 0][
-; 		y: j % 4 
-; 		l: y - 1
-; 		if 4 = y [j: j - 1 continue]
-; 		if all [grid-block/:rn/:y = 0 grid-block/:rn/:l <> 0][
-; 			grid-block/:rn/:y: grid-block/:rn/:l
-; 			grid-block/:rn/:l: 0
-; 			modified: true
-; 		]
-; 		j: j - 1
-; 	]
-; 	modified
-; ]
+move-left: function [/lacal modified][
+	modified: false
+	repeat i 4 [
+		modified: any [move-left-one i modified]
+	]
+	if modified [add-grid]
+]
 
-; move-right: function [][
-; 	repeat i 4 [
-; 		move-right-one i
-; 	]
-; ]
+move-down: function [][
+	rotation 270
+	move-left 
+	rotation 90 
+]
+
+move-up: function [][
+	rotation 90
+	move-left
+	rotation 270
+]
+
+move-right: function [][
+	rotation 180
+	move-left
+	rotation 180
+]
+
+can-move: func [return: [logic!] /local checkfull f u d l r][
+	canmove: false
+	f: true
+	repeat i 3 [
+		repeat j 3 [
+			d: i + 1 
+			r: j + 1
+			if any [
+					all [grid-block/:i/:j = grid-block/:i/:r j < 4] 
+					all [grid-block/:i/:j = grid-block/:d/:j i < 4]
+				][
+					canmove: true 
+					f: false
+			] 
+			unless f [break]
+		]
+		unless f [break]
+	]
+	if any [grid-block/4/4 = grid-block/3/4 grid-block/4/4 = grid-block/4/3][
+		canmove: true 
+	]
+	unless canmove [
+		alert/pane/1/text: "Game over , do you want to try again?"
+		view alert
+	]
+]
+
+win?: func [][
+	repeat i 4 [
+		repeat j 4 [
+			if grid-block/:i/:j = 64 [
+				alert/pane/1/text: "Congratulations! You win!"
+				view alert
+			]
+		]
+	]
+]
 
 
+alert: layout [
+	text center 200x20 "Game over , do you want to try again?" return
+	pad 70x0 button "yes"  	[
+		init-block
+		show-block unview] return
+	pad 70x0 button "no"	[unview grid-world unview]	
+]
+
+init-block
 show-block
 view grid-world
-?? grid-block
 
 
 
