@@ -8,7 +8,7 @@ grid-world: layout/tight [
 ]
 
 original-block: [[0 0 0 0] [0 0 2 0] [2 0 0 0] [0 0 0 0]]
-init-block: func [][
+init-block: func [][  ;--the init-block can add random position, if you want to do it
 	grid-block: copy/deep original-block
 	fake-block: copy/deep original-block
 ]
@@ -19,6 +19,19 @@ show-block: function [/local i j l][     ;--to bind the block value with the win
 			either grid-block/:i/:j <> 0 [
 				grid-world/pane/:l/text: form grid-block/:i/:j
 				grid-world/pane/:l/visible?: true
+				switch grid-world/pane/:l/text [
+					"2"		[grid-world/pane/:l/color: 0.255.204]
+					"4"		[grid-world/pane/:l/color: 0.255.255]
+					"8"		[grid-world/pane/:l/color: 51.204.255]
+					"16"	[grid-world/pane/:l/color: 102.204.255]
+					"32"	[grid-world/pane/:l/color: 204.204.255]
+					"64"	[grid-world/pane/:l/color: 255.204.255]
+					"128"	[grid-world/pane/:l/color: 255.153.204]
+					"256"	[grid-world/pane/:l/color: 255.153.153]
+					"512" 	[grid-world/pane/:l/color: 255.153.102]
+					"1024" 	[grid-world/pane/:l/color: 255.153.51]
+					"2048"	[grid-world/pane/:l/color: red]
+				]
 			][
 				grid-world/pane/:l/visible?: false 
 			]
@@ -161,7 +174,7 @@ win?: func [][
 	repeat i 4 [
 		repeat j 4 [
 			if grid-block/:i/:j = 64 [
-				alert/pane/1/text: "Congratulations! You win!"
+				alert/pane/1/text: "Congratulations! You win! Do you want to play again"
 				view alert
 			]
 		]
@@ -170,11 +183,11 @@ win?: func [][
 
 
 alert: layout [
-	text center 200x20 "Game over , do you want to try again?" return
-	pad 70x0 button "yes"  	[
+	text center 300x20 "Game over , do you want to try again?" return
+	pad 100x0 button "yes"  	[
 		init-block
 		show-block unview] return
-	pad 70x0 button "no"	[unview grid-world unview]	
+	pad 100x0 button "no"	[unview grid-world unview]	
 ]
 
 init-block
