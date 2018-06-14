@@ -173,7 +173,7 @@ can-move: func [return: [logic!] /local checkfull f u d l r][
 win?: func [][
 	repeat i 4 [
 		repeat j 4 [
-			if grid-block/:i/:j = 64 [
+			if grid-block/:i/:j = 2048 [
 				alert/pane/1/text: "Congratulations! You win! Do you want to play again"
 				view alert
 			]
