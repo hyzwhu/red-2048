@@ -56,10 +56,10 @@ add-grid: function [/local i j f][
 grid-world/actors: make object! [
 	on-key-down: func [face [object!] event [event!]][
 		switch event/key [
-			up		[move-up 	show-block win? can-move]
-			down 	[move-down 	show-block win? can-move]
-			left 	[move-left 	show-block win? can-move]
-			right	[move-right show-block win? can-move]
+			up		[move-up 	show-block win? ]
+			down 	[move-down 	show-block win? ]
+			left 	[move-left 	show-block win?	]
+			right	[move-right show-block win? ]
 		]
 	]
 ]
@@ -117,12 +117,20 @@ rotation: func [angle [integer!] /local offsetX offsetY sin cos rx ry][
 	]
 ]
 
-move-left: function [/lacal modified][
+move-left: function [/local modified em][
 	modified: false
 	repeat i 4 [
 		modified: any [move-left-one i modified]
 	]
-	if modified [add-grid]
+	em: is-empty?
+	?? modified
+	?? em
+	either all [modified em][
+		add-grid
+	][
+		can-move?
+	]
+	?? grid-block
 ]
 
 move-down: function [][
@@ -143,7 +151,15 @@ move-right: function [][
 	rotation 180
 ]
 
-can-move: func [return: [logic!] /local checkfull f u d l r][
+is-empty?: func [return: [logic!]][
+	repeat i 4 [
+		repeat j 4 [
+			if 0 = grid-block/:i/:j [return true]
+		]
+	]
+]
+
+can-move?: func [return: [logic!] /local checkfull f u d l r][
 	canmove: false
 	f: true
 	repeat i 4 [
@@ -161,7 +177,10 @@ can-move: func [return: [logic!] /local checkfull f u d l r][
 		]
 		unless f [break]
 	]
-	if any [grid-block/4/4 = grid-block/3/4 grid-block/4/4 = grid-block/4/3][
+	if any [
+		grid-block/4/4 = grid-block/3/4 
+		grid-block/4/4 = grid-block/4/3
+	][
 		canmove: true 
 	]
 	unless canmove [
