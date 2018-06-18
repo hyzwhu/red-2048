@@ -123,14 +123,11 @@ move-left: function [/local modified em][
 		modified: any [move-left-one i modified]
 	]
 	em: is-empty?
-	?? modified
-	?? em
 	either all [modified em][
 		add-grid
 	][
-		can-move?
+		unless em [can-move?]
 	]
-	?? grid-block
 ]
 
 move-down: function [][
