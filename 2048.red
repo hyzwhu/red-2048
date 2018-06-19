@@ -1,10 +1,12 @@
 Red []
 grid-world: layout/tight [
-    style b: base 30x30 
-    at 0x0 b 	at 40x0 b 	at 80x0 b 	at 120x0 b 	
-	at 0x40 b 	at 40x40 b 	at 80x40 b 	at 120x40 b 
-    at 0x80 b	at 40x80 b 	at 80x80 b 	at 120x80 b
-    at 0x120 b 	at 40x120 b at 80x120 b at 120x120 b
+	title "red-2048"
+	size 230x230
+    style b: base 50x50 
+    at 0x0 b 	at 60x0 b 	at 120x0 b 		at 180x0 b 	
+	at 0x60 b 	at 60x60 b 	at 120x60 b 	at 180x60 b 
+    at 0x120 b	at 60x120 b at 120x120 b 	at 180x120 b
+    at 0x180 b 	at 60x180 b at 120x180 b 	at 180x180 b
 ]
 
 original-block: [[0 0 0 0] [0 0 2 0] [2 0 0 0] [0 0 0 0]]
@@ -200,10 +202,11 @@ win?: func [][
 
 alert: layout [
 	text center 300x20 "Game over , do you want to try again?" return
-	pad 100x0 button "yes"  	[
+	pad 100x0 button "yes" [
 		init-block
-		show-block unview] return
-	pad 100x0 button "no"	[unview grid-world unview]	
+		show-block unview
+		] return
+	pad 100x0 button "no" [unview grid-world unview]	
 ]
 
 init-block
