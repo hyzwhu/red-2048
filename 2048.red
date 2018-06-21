@@ -2,18 +2,20 @@ Red []
 grid-world: layout/tight [
 	title "red-2048"
 	size 230x230
-    style b: base 50x50 
-    at 0x0 b 		at 60x0 b 		at 120x0 b 		at 180x0 b 	
-	at 0x60 b 		at 60x60 b 		at 120x60 b 	at 180x60 b 
-    at 0x120 b		at 60x120 b 	at 120x120 b 	at 180x120 b
-    at 0x180 b 		at 60x180 b 	at 120x180 b 	at 180x180 b
+	style b: base 50x50 
+	at 0x0 b		at 60x0 b		at 120x0 b		at 180x0 b 	
+	at 0x60 b		at 60x60 b		at 120x60 b		at 180x60 b 
+    at 0x120 b		at 60x120 b		at 120x120 b	at 180x120 b
+    at 0x180 b		at 60x180 b		at 120x180 b	at 180x180 b
 ]
 
-original-block: [[0 0 0 0] [0 0 2 0] [2 0 0 0] [0 0 0 0]]
+original-block: [[0 0 0 0] [0 0 1024 0] [1024 0 0 0] [0 0 0 0]]
+
 init-block: func [][  ;--the init-block can add random position, if you want to do it
 	grid-block: copy/deep original-block
 	fake-block: copy/deep original-block
 ]
+
 show-block: function [/local i j l][     ;--to bind the block value with the window's panes
 	repeat i 4 [
 		repeat j 4 [
