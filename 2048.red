@@ -9,7 +9,7 @@ grid-world: layout/tight [
     at 0x180 b		at 60x180 b		at 120x180 b	at 180x180 b
 ]
 
-original-block: [[0 0 0 0] [0 0 1024 0] [1024 0 0 0] [0 0 0 0]]
+original-block: [[0 0 0 0] [0 0 2 0] [2 0 0 0] [0 0 0 0]]
 
 init-block: func [][  ;--the init-block can add random position, if you want to do it
 	grid-block: copy/deep original-block
