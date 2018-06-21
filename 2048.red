@@ -3,10 +3,10 @@ grid-world: layout/tight [
 	title "red-2048"
 	size 230x230
     style b: base 50x50 
-    at 0x0 b 	at 60x0 b 	at 120x0 b 		at 180x0 b 	
-	at 0x60 b 	at 60x60 b 	at 120x60 b 	at 180x60 b 
-    at 0x120 b	at 60x120 b at 120x120 b 	at 180x120 b
-    at 0x180 b 	at 60x180 b at 120x180 b 	at 180x180 b
+    at 0x0 b 		at 60x0 b 		at 120x0 b 		at 180x0 b 	
+	at 0x60 b 		at 60x60 b 		at 120x60 b 	at 180x60 b 
+    at 0x120 b		at 60x120 b 	at 120x120 b 	at 180x120 b
+    at 0x180 b 		at 60x180 b 	at 120x180 b 	at 180x180 b
 ]
 
 original-block: [[0 0 0 0] [0 0 2 0] [2 0 0 0] [0 0 0 0]]
@@ -46,8 +46,10 @@ add-grid: function [/local i j f][
 	repeat i 4 [
 		repeat j 4 [
 			if 0 = grid-block/:i/:j [
-				grid-block/:i/:j: either 1 <> random 4 [2][4]
-				f: false
+				if 1 = random 2 [
+					grid-block/:i/:j: either 1 <> random 4 [2][4]
+					f: false
+				]
 			]
 			unless f [break]
 		]
@@ -175,12 +177,6 @@ can-move?: func [return: [logic!] /local checkfull f u d l r][
 			unless f [break]
 		]
 		unless f [break]
-	]
-	if any [
-		grid-block/4/4 = grid-block/3/4 
-		grid-block/4/4 = grid-block/4/3
-	][
-		canmove: true 
 	]
 	unless canmove [
 		alert/pane/1/text: "Game over , do you want to try again?"
